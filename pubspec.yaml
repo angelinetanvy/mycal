@@ -38,6 +38,7 @@ dependencies:
   uuid: ^3.0.7
   http: any
   universal_io: ^2.0.4
+  flutter_datetime_picker: ^1.5.1
 
 dev_dependencies:
   flutter_test:
