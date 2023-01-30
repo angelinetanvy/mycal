@@ -47,6 +47,25 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void updateEvent(){
+    var url = "http://127.0.0.1/mycal/update_event.php";
+    http.post(Uri.parse(url),body: {
+      "id": "2222222222222222",
+      "title": "go to gym",
+      "start": "1974-03-20 12:00:00",
+      "end": "2022-03-20 12:00:00",
+      "location": "gym",
+      "detail": "2 hours",
+    });
+  }
+
+  void deleteEvent(){
+    var url = "http://127.0.0.1/mycal/delete_event.php";
+    http.post(Uri.parse(url),body: {
+      "id": "2222222222222222",
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
