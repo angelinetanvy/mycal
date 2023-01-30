@@ -2,8 +2,18 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
+import 'package:universal_io/io.dart';
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
 
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -66,6 +76,40 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<List> getEvent() async{
+    final params = {
+      "id": "2222222222222222",
+    };
+    final uri = Uri.https("127.0.0.1","/mycal/get_event.php", params);
+
+    try {
+      final res = await http.get(uri);  
+      // print(jsonDecode(res.body.substring(16)));
+      return jsonDecode(res.body.substring(16));
+    } catch (e) {
+      print(e);
+      return [];
+    }  
+    
+  }
+
+  Future<List> getEvents() async{
+    final params = {
+      "date": "1974-03-20",
+    };
+    
+    final uri = Uri.https("127.0.0.1","/mycal/get_events.php", params);
+    try {
+        final res = await http.get(uri);  
+        print(jsonDecode(res.body.substring(10)));
+        return jsonDecode(res.body.substring(10));
+    } catch (e) {
+      print(e);
+      return [];
+    }  
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => createEvent(),
+        onPressed: () => getEvents(),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
