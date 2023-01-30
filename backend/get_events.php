@@ -4,12 +4,12 @@
     ini_set('display_errors', 1);
 
     include 'db_connection.php';
-    $conn = OpenCon();
+    $con = openCon();
 
     $date = substr($_SERVER['QUERY_STRING'],5);
     echo $date;
 
-    $sql = $conn->query("SELECT *  FROM `Events` WHERE `event_start` LIKE '$date%'");
+    $sql = $con->query("SELECT *  FROM `Events` WHERE `event_start` LIKE '$date%'");
 
     $res =array();
     while($row=$sql->fetch_assoc())

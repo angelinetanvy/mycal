@@ -3,9 +3,11 @@
     ini_set('display_errors', 1);
 
     include 'db_connection.php';
-    $conn = OpenCon();
+    $con = openCon();
     $id = $_POST['id'];
 
-    $conn -> query("DELETE FROM Event WHERE `Events`.`event_id` = '$id'");
+    $con -> query("DELETE FROM Events WHERE `Events`.`event_id` = '$id'");
+
+    closeCon();
 
 ?>

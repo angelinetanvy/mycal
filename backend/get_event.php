@@ -4,16 +4,15 @@
     ini_set('display_errors', 1);
 
     include 'db_connection.php';
-    $conn = OpenCon();
+    $con = openCon();
 
     $id = substr($_SERVER['QUERY_STRING'],3);
     echo $id;
 
-    $sql = $conn->query("SELECT *  FROM `Events` WHERE `event_id` = '$id'");
+    $sql = $con->query("SELECT *  FROM `Events` WHERE `event_id` = '$id'");
 
     $res =array();
     while($row=$sql->fetch_assoc())
-
     {
         $res[] = $row;
     }
