@@ -20,15 +20,15 @@ class _NewEventPage extends State<NewEventPage> {
 
     var uuid = Uuid();
 
-    void createEvent(){
+    void createEvent(String title, String start, String end, String location, String detail){
         var url = "http://127.0.0.1/mycal/create_event.php";
         http.post(Uri.parse(url),body: {
-            "id": "2222222222222222",
-            "title": "go to sleep",
-            "start": "1974-03-20 12:00:00",
-            "end": "2022-03-20 12:00:00",
-            "location": "bedroom",
-            "detail": "8 hours",
+            "id": uuid.v1(),
+            "title": title,
+            "start": start,
+            "end": end,
+            "location": location,
+            "detail": detail,
         });
     }
 
@@ -169,7 +169,10 @@ class _NewEventPage extends State<NewEventPage> {
                     child: const Text('Cancel'),
                 ),
                 TextButton(
-                    onPressed: () => Navigator.pop(context, 'OK'),
+                    onPressed: () {
+                        createEvent(titleCont,startCont,endCont,detailCont,locationCont);
+                        Navigator.pop(context, 'OK');
+                    },
                     child: const Text('OK'),
                 ),
             ],
