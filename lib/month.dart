@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'package:universal_io/io.dart';
+import 'new_event.dart';
 
 class MonthPage extends StatefulWidget {
   const MonthPage({super.key});
@@ -71,8 +72,14 @@ class _MonthPage extends State<MonthPage> {
             ]
         ),
         floatingActionButton: FloatingActionButton(
-            onPressed: () => getEvents(),
-            child: const Icon(Icons.add),
+            backgroundColor: Colors.white,
+            onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => NewEventPage(),
+                );
+            },
+            child: const Icon(Icons.add, color:Color(0xFF343A40)),
         ),
     );
   }
