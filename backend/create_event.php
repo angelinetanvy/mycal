@@ -12,7 +12,7 @@
     $end = $_POST['end'];
     $loc = $_POST['location'];
 
-    $con->query("INSERT INTO `Event`(`event_id`, `event_title`, `event_detail`, `event_start`, `event_end`, `event_location`) VALUES('".$id."','".$title."','".$detail."','".$start."','".$end."','".$loc."')");
+    $con->query("INSERT INTO `Events`(`event_id`, `event_title`, `event_detail`, `event_start`, `event_end`, `event_location`) VALUES('".$id."','".$title."','".$detail."','".$start."','".$end."','".$loc."')");
 
     closeCon();
 ?>
