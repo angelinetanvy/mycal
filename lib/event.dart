@@ -23,6 +23,7 @@ class _EventPage extends State<EventPage> {
     String titleCont = "",detailCont="",locationCont="";
     String startCont = "";
     String endCont = "Select End Time";
+    bool editing = false;
 
     final TextEditingController titleController = new TextEditingController();
     final TextEditingController detailController = new TextEditingController();
@@ -43,18 +44,18 @@ class _EventPage extends State<EventPage> {
     void updateEvent(){
         var url = "http://127.0.0.1/mycal/update_event.php";
         http.post(Uri.parse(url),body: {
-            "id": "2222222222222222",
-            "title": "go to gym",
-            "start": "1974-03-20 12:00:00",
-            "end": "2022-03-20 12:00:00",
-            "location": "gym",
-            "detail": "2 hours",
+            "id": event['event_id'],
+            "title": titleCont == ""? titleController.text : titleCont,
+            "start": startCont,
+            "end": endCont,
+            "location": locationCont == ""? locationController.text : locationCont,
+            "detail": detailCont == ""? detailController.text : detailCont,
         });
     }
 
     Future<List> getEvent() async{
         final params = {
-            "id": "2222222222222222",
+            "id": event['event_id'],
         };
         final uri = Uri.https("127.0.0.1","/mycal/get_event.php", params);
 
@@ -89,7 +90,7 @@ class _EventPage extends State<EventPage> {
                     setState((){titleCont = title;});
                 },
                 controller:titleController,
-                enabled:false
+                enabled:editing
             )  
         );
     }
@@ -110,7 +111,7 @@ class _EventPage extends State<EventPage> {
                     setState((){detailCont = title;});
                 },
                 controller:detailController,
-                enabled:false
+                enabled:editing
             )  
         );
     }
@@ -130,7 +131,7 @@ class _EventPage extends State<EventPage> {
                     setState((){locationCont = title;});
                 },
                 controller:locationController,
-                enabled:false
+                enabled:editing
             )  
         );
     }
@@ -189,6 +190,49 @@ class _EventPage extends State<EventPage> {
         ));
     }
 
+    List<Widget> botButtons() {
+        if (editing){
+            return [                
+                TextButton(
+                    onPressed: () {
+                        setState((){editing = false;});
+                        Navigator.pop(context, 'Cancel');
+                    },
+                    child: const Text('Cancel'),
+                ),
+                TextButton(
+                    onPressed: () {
+                        updateEvent();
+                        Navigator.pop(context);
+                        Navigator.pop(rootCtx);
+                    },
+                    child: const Text('OK'),
+                ),];
+        } else {
+            return [
+                TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('Cancel'),
+                ),
+                TextButton(
+                    onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => DeleteEvent(event,context,rootCtx),
+                        );
+                    },
+                    child: const Text('Delete'),
+                ),
+                TextButton(
+                    onPressed: () {
+                        setState((){editing = true;});
+                    },
+                    child: const Text('Edit'),
+                ),
+            ];
+        }
+    }
+
     @override
     Widget build(BuildContext context) {
         return new AlertDialog(
@@ -206,25 +250,7 @@ class _EventPage extends State<EventPage> {
                     endField(context),
                 ],                    
             ),
-            actions: <Widget>[
-                TextButton(
-                    onPressed: () => Navigator.pop(context, 'Cancel'),
-                    child: const Text('Cancel'),
-                ),
-                TextButton(
-                    onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) => DeleteEvent(event,context,rootCtx),
-                        );
-                    },
-                    child: const Text('Delete'),
-                ),
-                TextButton(
-                    onPressed: () => Navigator.pop(context, 'Edit'),
-                    child: const Text('Edit'),
-                ),
-            ],
+            actions: botButtons()
         );
     }
 }
