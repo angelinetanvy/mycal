@@ -96,7 +96,7 @@ class _NewEventPage extends State<NewEventPage> {
         padding: const EdgeInsets.only(bottom:5),
         child: const Align(
             alignment: Alignment.topLeft,
-            child: Text("Select Event Start Time"),
+            child: Text("Event Start Time"),
         ),
     );
 
@@ -104,7 +104,7 @@ class _NewEventPage extends State<NewEventPage> {
         padding: const EdgeInsets.only(top:15,bottom:5),
         child: const Align(
             alignment: Alignment.topLeft,
-            child: Text("Select Event End Time"),
+            child: Text("Event End Time"),
         ),
     );
 
