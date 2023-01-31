@@ -15,15 +15,35 @@ class MonthPage extends StatefulWidget {
 
 class _MonthPage extends State<MonthPage> {
     DateTime currDate = DateTime.now();
+    List<Widget> tiles = [];
+
+    @override
+    void initState(){
+        super.initState();
+        createTiles();
+    }
+
+    void createTiles(){
+        setState((){
+            tiles = [];
+            DateTime thisMonth =  currDate.subtract(Duration(days:currDate.day));
+            for (var i=1;i<=DateTime(currDate.year, currDate.month + 1, 0).day;i++){
+                thisMonth = thisMonth.add(Duration(days:1));
+                tiles.add(tile(i,thisMonth));
+            }
+        });
+    }
 
     void nextMonth() {
         var daysMonth = DateTime(currDate.year, currDate.month + 1, 0).day - currDate.day + 1;
-        setState((){ currDate = currDate.add(Duration(days:daysMonth));});
+        setState((){currDate = currDate.add(Duration(days:daysMonth));});
+        createTiles();
     }
 
     void previousMonth() {
         var daysMonth = DateTime(currDate.year, currDate.month, 0).day + currDate.day - 1;
         setState((){currDate = currDate.subtract(Duration(days:daysMonth));});
+        createTiles();
     }
 
   Future<List> getEvents() async{
@@ -80,27 +100,30 @@ class _MonthPage extends State<MonthPage> {
     );
   }
 
-  Widget grid = SizedBox(
-    height:300,
-    child:ListView(
-      children: const <Widget>[
-        Card(child: ListTile(title: Text('One-line ListTile'))),
-        Card(
-          child: ListTile(
-            leading: FlutterLogo(),
-            title: Text('One-line with leading widget'),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: Text('One-line with trailing widget'),
-            trailing: Icon(Icons.more_vert),
-          ),
-        ),
+    Widget tile(int no, DateTime date) {
+        return GestureDetector(
+            onTap: () {
+                print(date);
+            },
+            child: Container(
+                    width:55,
+                    height:80,
+                    child:Card(
+                    color: Colors.grey[700],
+                    child:Text(no.toString()),
+                )
+            ),
+        );
+    } 
 
-      ],
-    )
-  );
+  Widget row(List<Widget> rowTiles) {
+    return Container(
+        height:80,
+        child:Row(
+            children:rowTiles
+        )
+    );
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -109,18 +132,26 @@ class _MonthPage extends State<MonthPage> {
         body: Column(
             children:[
                 titleSection(),
-                grid
+                Column(
+                    children:[
+                        row(tiles.sublist(0,7)),
+                        row(tiles.sublist(7,14)),
+                        row(tiles.sublist(14,21)),
+                        row(tiles.sublist(21,28)),
+                        row(tiles.sublist(28))
+                    ]
+                )
             ]
         ),
         floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.white,
+            backgroundColor: Color(0xFF343A40),
             onPressed: () {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => NewEventPage(),
                 );
             },
-            child: const Icon(Icons.add, color:Color(0xFF343A40)),
+            child: const Icon(Icons.add, color:Colors.white),
         ),
     );
   }
