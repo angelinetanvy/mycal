@@ -6,6 +6,7 @@ import 'package:universal_io/io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'new_event.dart';
 
 class DayPage extends StatefulWidget {
     final DateTime thisDate;
@@ -113,7 +114,7 @@ class _DayPage extends State<DayPage> {
 
     Widget eventList() {
         return Container(
-            height:300,
+            height:550,
             width:300,
             child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -144,6 +145,10 @@ class _DayPage extends State<DayPage> {
                 TextButton(
                     onPressed: () {
                         Navigator.pop(context, 'OK');
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => NewEventPage(),
+                        );
                     },
                     child: const Text('Add'),
                 ),
