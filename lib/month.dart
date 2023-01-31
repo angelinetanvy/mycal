@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'package:universal_io/io.dart';
 import 'new_event.dart';
+import 'day.dart';
 import 'package:intl/intl.dart';
 
 class MonthPage extends StatefulWidget {
@@ -101,15 +102,21 @@ class _MonthPage extends State<MonthPage> {
   }
 
     Widget tile(int no, DateTime date) {
+        var formatter = new DateFormat('yyyy-MM-dd');
+        String tileDate = formatter.format(date);
+        String curDate = formatter.format(DateTime.now());
         return GestureDetector(
             onTap: () {
-                print(date);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => DayPage(date),
+                );
             },
             child: Container(
                     width:55,
                     height:80,
                     child:Card(
-                    color: Colors.grey[700],
+                    color: tileDate == curDate? Colors.white:Colors.grey[700],
                     child:Text(no.toString()),
                 )
             ),
