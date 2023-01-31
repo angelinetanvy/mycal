@@ -5,17 +5,21 @@ import 'package:http/http.dart' as http;
 import 'package:universal_io/io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'delete_event.dart';
 
 class EventPage extends StatefulWidget {
     Map<String, dynamic> event;
-    EventPage(this.event);
+    BuildContext rootCtx;
+
+    EventPage(this.event, this.rootCtx);
 
   @override
-  State<EventPage> createState() => _EventPage(this.event);
+  State<EventPage> createState() => _EventPage(this.event, this.rootCtx);
 }
 
 class _EventPage extends State<EventPage> {
     Map<String, dynamic> event;
+    BuildContext rootCtx;
     String titleCont = "",detailCont="",locationCont="";
     String startCont = "";
     String endCont = "Select End Time";
@@ -24,7 +28,7 @@ class _EventPage extends State<EventPage> {
     final TextEditingController detailController = new TextEditingController();
     final TextEditingController locationController = new TextEditingController();
 
-    _EventPage(this.event);
+    _EventPage(this.event, this.rootCtx);
 
     @override
     void initState() {
@@ -45,13 +49,6 @@ class _EventPage extends State<EventPage> {
             "end": "2022-03-20 12:00:00",
             "location": "gym",
             "detail": "2 hours",
-        });
-    }
-
-    void deleteEvent(){
-        var url = "http://127.0.0.1/mycal/delete_event.php";
-        http.post(Uri.parse(url),body: {
-            "id": "2222222222222222",
         });
     }
 
@@ -216,9 +213,16 @@ class _EventPage extends State<EventPage> {
                 ),
                 TextButton(
                     onPressed: () {
-                        Navigator.pop(context, 'OK');
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => DeleteEvent(event,context,rootCtx),
+                        );
                     },
-                    child: const Text('OK'),
+                    child: const Text('Delete'),
+                ),
+                TextButton(
+                    onPressed: () => Navigator.pop(context, 'Edit'),
+                    child: const Text('Edit'),
                 ),
             ],
         );

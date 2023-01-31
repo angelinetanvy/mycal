@@ -87,7 +87,7 @@ class _DayPage extends State<DayPage> {
             onTap: () {
                 showDialog(
                     context: context,
-                    builder: (BuildContext context) => EventPage(e),
+                    builder: (BuildContext context) => EventPage(e,context),
                 );
             },
             child: Container(
