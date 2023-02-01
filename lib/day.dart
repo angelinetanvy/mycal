@@ -122,7 +122,7 @@ class _DayPage extends State<DayPage> {
             height:550,
             width:300,
             child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+                scrollDirection: Axis.vertical,
                 child: Column(
                     children:cards
                 )

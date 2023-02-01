@@ -17,11 +17,60 @@ class MonthPage extends StatefulWidget {
 class _MonthPage extends State<MonthPage> {
     DateTime currDate = DateTime.now();
     List<Widget> tiles = [];
+    List events = [];
+    List<Widget> cards = [];
 
     @override
     void initState(){
         super.initState();
         createTiles();
+        getAndCreate();
+    }
+
+    void getAndCreate() async{
+        var ev = getTodayEvent();
+        var newEvs = await ev;
+
+        newEvs.sort((m1, m2) {
+            return m1["event_start"].compareTo(m2["event_start"]);
+        });
+
+        newEvs = newEvs.where((m) => DateTime.parse(m['event_start']).isAfter(DateTime.now())).toList();
+
+        setState((){
+            events = newEvs;
+            createCards();
+        });
+    }
+
+    void createCards(){
+        setState((){
+            cards = [];
+            for (var e in events){
+                cards.add(eventCard(e));
+            }
+        });
+    }
+
+    Future<List> getTodayEvent() async{
+        events = [];
+        var formatter = new DateFormat('yyyy-MM-dd');
+        String today = formatter.format(DateTime.now());
+        final params = {
+            "date": today,
+        };
+        
+        final uri = Uri.https("127.0.0.1","/mycal/get_events.php", params);
+        try {
+            final res = await http.get(uri);  
+            // print(jsonDecode(res.body.substring(10)));
+            events =  jsonDecode(res.body.substring(10));
+            return events;
+        } catch (e) {
+            print(e);
+            return [];
+        }  
+
     }
 
     void createTiles(){
@@ -63,6 +112,11 @@ class _MonthPage extends State<MonthPage> {
     }  
 
   }
+
+    Widget separator = Container(
+        padding:const EdgeInsets.only(bottom:10,top:5),
+        child:Divider(color: Colors.white),
+    );
 
   Widget titleSection() {
     final DateFormat formatter = DateFormat('yMMMM');
@@ -132,6 +186,47 @@ class _MonthPage extends State<MonthPage> {
     );
   } 
 
+    Widget todaysEvent() {
+        return Container(
+            height:140,
+            width:350,
+            child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                    children:cards
+                )
+            )
+        );
+    }
+
+    Widget eventCard(Map<String, dynamic> e) {
+        var timeStamp = DateFormat.jm().format(DateTime.parse(e['event_start']));
+        return Container(
+            margin: new EdgeInsets.fromLTRB(5, 10, 10, 5),
+            width:300,
+            height:50,
+            child:Card(
+                color:Colors.grey[300],
+                child:Row(
+                    children:[
+                        Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.only(left:15,right:15),
+                                child: Text(e['event_title'],textAlign: TextAlign.left,style: TextStyle(color: Colors.black)),
+                            ),
+                        ),
+                        Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.only(left:15,right:15),
+                                child: Text(timeStamp.toString(),textAlign: TextAlign.right,style: TextStyle(color: Colors.black)),
+                            ),
+                        ),
+                    ]
+                )
+            )
+        );
+    }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,11 +236,15 @@ class _MonthPage extends State<MonthPage> {
                 titleSection(),
                 Column(
                     children:[
+                        Container(height:20),
                         row(tiles.sublist(0,7)),
                         row(tiles.sublist(7,14)),
                         row(tiles.sublist(14,21)),
                         row(tiles.sublist(21,28)),
-                        row(tiles.sublist(28))
+                        row(tiles.sublist(28)),
+                        separator,
+                        Text("Today's upcoming event:",style: TextStyle(fontSize: 15, color:Colors.white),),
+                        todaysEvent()
                     ]
                 )
             ]
